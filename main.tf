@@ -79,45 +79,25 @@ resource "aws_key_pair" "gitlab-key" {
 }
 
 //ami
-data "aws_ami" "amzn-linux-2023-ami" {
+data "aws_ami" "gitlab-ami" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["782774275127"]
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
+    values = ["GitLab CE 16.11.2 (ARM64)"]
   }
 } 
 
 //server
 resource "aws_instance" "gitlab-server" {
-  ami                         = data.aws_ami.amzn-linux-2023-ami.id
-  instance_type               = "t3.medium"
+  ami                         = data.aws_ami.gitlab-ami.id
+  instance_type               = "t4g.medium"
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.gitlab-server-sg.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.gitlab-key.key_name
 
-    user_data = <<-EOF
-              #!/bin/bash
-
-              # Enable SSH
-              sudo systemctl enable --now sshd
-
-              # Install and enable firewalld
-              sudo dnf install -y firewalld
-              sudo systemctl enable --now firewalld
-
-              # Open necessary ports
-              sudo firewall-cmd --permanent --add-service=ssh
-              sudo firewall-cmd --permanent --add-service=http
-              sudo firewall-cmd --permanent --add-service=https
-              sudo systemctl reload firewalld
-
-              # Install GitLab CE repo
-              sleep 20
-              curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
-              EOF
 
   tags = {
     Name = "gitlab-server"
