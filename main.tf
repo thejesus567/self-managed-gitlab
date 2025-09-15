@@ -117,10 +117,6 @@ resource "aws_instance" "gitlab-server" {
               # Install GitLab CE repo
               sleep 20
               curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
-
-              # Get public IP and install GitLab
-              PUBLIC_IP=$(curl -s ifconfig.me)
-              sudo EXTERNAL_URL="http://$PUBLIC_IP" dnf install -y gitlab-ce
               EOF
 
   tags = {
