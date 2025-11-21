@@ -6,5 +6,9 @@
 	    	"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
             		"version": "stable"
         	}
-    }
+    	},
+   	"mounts": [
+  		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	]
+
 }
