@@ -1,5 +1,6 @@
 locals {
   policy_name = "gl-s3-policy"
+  role_name   = "GitLabS3Access"
 }
 
 resource "aws_iam_policy" "s3-policy" {
@@ -32,4 +33,26 @@ resource "aws_iam_policy" "s3-policy" {
     ]
 }
 EOT
+}
+
+data "aws_iam_policy_document" "instance_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+
+resource "aws_iam_role" "instance" {
+  name               = "instance_role"
+  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
+
+  inline_policy {
+    name   = "policy-8675309"
+    policy = aws_iam_policy.s3-policy
+  }
 }
