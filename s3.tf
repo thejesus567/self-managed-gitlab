@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "s3-policy-document" {
 
 resource "aws_iam_policy" "s3-policy" {
   name        = local.policy_name
-  description = "IAM Polcicy for gl :aws_s3_buckets3 buckets"
+  description = "IAM Polcicy for s3 buckets"
   policy      = data.aws_iam_policy_document.s3-policy-document.json
 }
 
@@ -43,7 +43,6 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
     }
   }
 }
-
 
 resource "aws_iam_role" "gitlab-s3-access" {
   name               = local.role_name
