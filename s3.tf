@@ -45,12 +45,13 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 }
 
 
-resource "aws_iam_role" "instance" {
+resource "aws_iam_role" "gitlab-s3-access" {
   name               = local.role_name
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
+}
 
-  inline_policy {
-    name   = "policy-8675309"
-    policy = aws_iam_policy.s3-policy
-  }
+
+resource "aws_iam_role_policy_attachment" "gitlab-s3-access-role-attachment" {
+  role       = aws_iam_role.gitlab-s3-access.name
+  policy_arn = aws_iam_policy.s3-policy.arn
 }
