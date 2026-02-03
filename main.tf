@@ -22,6 +22,6 @@ module "vpc" {
     Environment = var.env
   }
 
-  # IGW tags overwrites
+  # IGW tag overrides
   igw_tags = var.igw_tags
 }
