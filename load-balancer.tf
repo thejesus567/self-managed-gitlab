@@ -99,3 +99,5 @@ resource "aws_lb_listener" "ssh" {
     target_group_arn = aws_lb_target_group.ssh-target.arn
   }
 }
+
+#TODO: Add https listener
