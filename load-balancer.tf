@@ -44,10 +44,34 @@ module "nlb" {
 
   # enforce_security_group_inbound_rules_on_private_link_traffic = "on"
 
-  # Security Group
   security_groups = [aws_security_group.lb-sg.id]
 
   tags = {
     Environment = var.env
   }
 }
+
+########## Target groups ##########
+#
+resource "aws_lb_target_group" "http-target" {
+  name     = "gitlab-loadbalancer-http-target"
+  port     = 80
+  protocol = "TCP"
+  vpc_id   = module.vpc.vpc_id
+}
+
+resource "aws_lb_target_group" "https-target" {
+  name     = "gitlab-loadbalancer-http-target"
+  port     = 443
+  protocol = "TLS"
+  vpc_id   = module.vpc.vpc_id
+}
+
+resource "aws_lb_target_group" "ssh-target" {
+  name     = "gitlab-loadbalancer-ssh-target"
+  port     = 22
+  protocol = "TCP"
+  vpc_id   = module.vpc.vpc_id
+}
+
+###################################
