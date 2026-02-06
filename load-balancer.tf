@@ -61,7 +61,7 @@ resource "aws_lb_target_group" "http-target" {
 }
 
 resource "aws_lb_target_group" "https-target" {
-  name     = "gitlab-loadbalancer-http-target"
+  name     = "gitlab-loadbalancer-https-target"
   port     = 443
   protocol = "TLS"
   vpc_id   = module.vpc.vpc_id
@@ -75,3 +75,27 @@ resource "aws_lb_target_group" "ssh-target" {
 }
 
 ###################################
+#
+############ Listeners ############
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = module.nlb.arn
+  port              = "80"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http-target.arn
+  }
+}
+
+resource "aws_lb_listener" "ssh" {
+  load_balancer_arn = module.nlb.arn
+  port              = "22"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ssh-target.arn
+  }
+}
