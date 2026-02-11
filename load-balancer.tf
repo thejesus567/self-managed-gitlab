@@ -58,13 +58,11 @@ resource "aws_lb_target_group" "http-target" {
   port     = 80
   protocol = "TCP"
   vpc_id   = module.vpc.vpc_id
-}
 
-resource "aws_lb_target_group" "https-target" {
-  name     = "gitlab-loadbalancer-https-target"
-  port     = 443
-  protocol = "TLS"
-  vpc_id   = module.vpc.vpc_id
+  health_check {
+    path    = "/-/readiness"
+    matcher = "200"
+  }
 }
 
 resource "aws_lb_target_group" "ssh-target" {
