@@ -60,7 +60,7 @@ resource "aws_lb_target_group" "http-target" {
   vpc_id   = module.vpc.vpc_id
 
   health_check {
-    path    = "/-/readiness"
+    path    = "/-/readiness" # TODO: Add vpc cidr into /etc/gitlab/gitlab.rb
     matcher = "200"
   }
 }
@@ -109,7 +109,7 @@ resource "aws_lb_listener" "ssh" {
 
 #  default_action {
 #    type             = "forward"
-#    target_group_arn = aws_lb_target_group.https-target.arn
+#    target_group_arn = aws_lb_target_group.http-target.arn
 #  }
 #
 #}
