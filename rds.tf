@@ -9,6 +9,7 @@ resource "aws_security_group" "rds-sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
+    Name        = local.rds-sg-name
     Environment = var.env
   }
 }
@@ -16,7 +17,9 @@ resource "aws_security_group" "rds-sg" {
 resource "aws_vpc_security_group_ingress_rule" "postgresql-ingress" {
   security_group_id            = aws_security_group.rds-sg.id
   referenced_security_group_id = aws_security_group.lb-sg.id
-  ip_protocol                  = -1
+  from_port                    = 5432
+  ip_protocol                  = "tcp"
+  to_port                      = 5432
 }
 
 
