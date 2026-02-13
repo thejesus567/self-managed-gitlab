@@ -44,8 +44,8 @@ module "nlb" {
   subnets            = module.vpc.public_subnets
 
   # enforce_security_group_inbound_rules_on_private_link_traffic = "on"
-
-  security_groups = [aws_security_group.lb-sg.id]
+  create_security_group = false
+  security_groups       = [aws_security_group.lb-sg.id]
 
   tags = {
     Environment = var.env
