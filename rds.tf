@@ -1,5 +1,6 @@
 locals {
-  rds-sg-name = "gitlab-rds-sec-group"
+  rds-sg-name     = "gitlab-rds-sec-group"
+  db-subnet-group = "gitlab-subnet-rds-group"
 }
 
 # RDS security group
@@ -22,4 +23,12 @@ resource "aws_vpc_security_group_ingress_rule" "postgresql-ingress" {
   to_port                      = 5432
 }
 
+# DB Subnet group
+resource "aws_db_subnet_group" "rds-subnet-group" {
+  name       = local.db-subnet-group
+  subnet_ids = module.vpc.private_subnets
 
+  tags = {
+    Name = local.db-subnet-group
+  }
+}
