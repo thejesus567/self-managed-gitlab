@@ -1,12 +1,19 @@
-## NLB Security group 
+locals {
+  load_balancer_name = "gitlab-loadbalancer"
+  lb-sg-name         = "gitlab-loadbalancer-sec-group"
+  http-target-name   = "gitlab-loadbalancer-http-target"
+  ssh-target-name    = "gitlab-loadbalancer-ssh-target"
 
+}
+
+## NLB Security group 
 resource "aws_security_group" "lb-sg" {
-  name        = "gitlab-loadbalancer-sec-group"
+  name        = local.lb-sg-name
   description = "Security group for Network Load Balancer"
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Name        = "gitlab-loadbalancer-sec-group"
+    Name        = local.lb-sg-name
     Environment = var.env
   }
 }
@@ -38,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
 module "nlb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name               = "gitlab-loadbalancer"
+  name               = local.load_balancer_name
   load_balancer_type = "network"
   vpc_id             = module.vpc.vpc_id
   subnets            = module.vpc.public_subnets
@@ -55,7 +62,7 @@ module "nlb" {
 ########## Target groups ##########
 #
 resource "aws_lb_target_group" "http-target" {
-  name     = "gitlab-loadbalancer-http-target"
+  name     = local.http-target-name
   port     = 80
   protocol = "TCP"
   vpc_id   = module.vpc.vpc_id
@@ -67,7 +74,7 @@ resource "aws_lb_target_group" "http-target" {
 }
 
 resource "aws_lb_target_group" "ssh-target" {
-  name     = "gitlab-loadbalancer-ssh-target"
+  name     = local.ssh-target-name
   port     = 22
   protocol = "TCP"
   vpc_id   = module.vpc.vpc_id
