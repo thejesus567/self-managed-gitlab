@@ -6,6 +6,7 @@ resource "aws_security_group" "lb-sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
+    Name        = "gitlab-loadbalancer-sec-group"
     Environment = var.env
   }
 }
