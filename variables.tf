@@ -11,3 +11,9 @@ variable "igw_tags" {
     Name = "gitlab-gateway"
   }
 }
+
+variable "db_multi_az" {
+  type        = bool
+  description = "Multi AZ deployment for RDS database"
+  default     = false
+}
