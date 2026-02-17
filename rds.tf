@@ -45,7 +45,7 @@ module "db" {
   engine            = "postgres"
   engine_version    = "17"
   instance_class    = "db.t3.micro"
-  multi_az          = var.db_multi_az
+  multi_az          = true
   allocated_storage = 5
 
   db_name  = local.db-name
