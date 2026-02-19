@@ -52,13 +52,14 @@ module "db" {
   username = local.master-username
   port     = local.db-port
 
-  #TODO: Check thing below
-  #iam_database_authentication_enabled = true
+  deletion_protection = false
 
   vpc_security_group_ids = [aws_security_group.rds-sg.id]
 
   #TODO: Check if this would be good
   create_db_parameter_group = false
+
+  create_db_option_group = false
 
   tags = {
     Environment = var.env
@@ -66,6 +67,7 @@ module "db" {
 
   # DB subnet group
   create_db_subnet_group = true
+  db_subnet_group_name   = local.db-subnet-group
   subnet_ids             = module.vpc.private_subnets
 
 }
