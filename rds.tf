@@ -58,16 +58,15 @@ module "db" {
 
   #TODO: Check if this would be good
   create_db_parameter_group = false
+  create_db_option_group    = false
 
-  create_db_option_group = false
+  # DB subnet group
+  create_db_subnet_group = true
+
+  subnet_ids = module.vpc.private_subnets
 
   tags = {
     Environment = var.env
   }
-
-  # DB subnet group
-  create_db_subnet_group = true
-  db_subnet_group_name   = local.db-subnet-group
-  subnet_ids             = module.vpc.private_subnets
 
 }
