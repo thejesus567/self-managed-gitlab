@@ -40,19 +40,20 @@ resource "aws_db_subnet_group" "rds-subnet-group" {
 module "db" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = local.db-identifier
-
+  identifier        = local.db-identifier
   engine            = "postgres"
   engine_version    = "17"
-  instance_class    = "db.t3.micro"
+  instance_class    = "db.t3.micro" #TODO: needs to be dynamic
   multi_az          = true
-  allocated_storage = 5
+  allocated_storage = 5 #TODO: needs to be dynamic
+
 
   db_name  = local.db-name
   username = local.master-username
   port     = local.db-port
 
-  deletion_protection = false
+  deletion_protection = false #TODO: needs to be dynamic
+
 
   vpc_security_group_ids = [aws_security_group.rds-sg.id]
 
@@ -67,6 +68,10 @@ module "db" {
 
   tags = {
     Environment = var.env
+  }
+
+  db_subnet_group_tags = {
+    Name = local.db-subnet-group
   }
 
 }
