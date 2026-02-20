@@ -27,6 +27,6 @@ module "vpc" {
 
   # IGW tag overrides
   igw_tags = {
-    Namr = local.igw_name
+    Name = local.igw_name
   }
 }
