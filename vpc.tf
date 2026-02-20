@@ -1,3 +1,6 @@
+locals {
+  igw_name = "gitlab-gateway"
+}
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -23,5 +26,7 @@ module "vpc" {
   }
 
   # IGW tag overrides
-  igw_tags = var.igw_tags
+  igw_tags = {
+    Namr = local.igw_name
+  }
 }
