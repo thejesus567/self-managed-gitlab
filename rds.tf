@@ -38,7 +38,8 @@ resource "aws_db_subnet_group" "rds-subnet-group" {
 }
 
 module "db" {
-  source = "terraform-aws-modules/rds/aws"
+  source  = "terraform-aws-modules/rds/aws"
+  version = "7.1.0"
 
   identifier        = local.db-identifier
   engine            = "postgres"
@@ -50,20 +51,16 @@ module "db" {
 
   db_name  = local.db-name
   username = local.master-username
-
-  port = local.db-port
+  port     = local.db-port
 
   deletion_protection = var.db_deletion_protection
-
 
   vpc_security_group_ids = [aws_security_group.rds-sg.id]
 
   #TODO: Check if this would be good
-  create_db_parameter_group = false
   create_db_option_group    = false
-
-  # DB subnet group
-  create_db_subnet_group = true
+  create_db_parameter_group = false
+  create_db_subnet_group    = true
 
   subnet_ids = module.vpc.private_subnets
 
