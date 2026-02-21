@@ -43,16 +43,17 @@ module "db" {
   identifier        = local.db-identifier
   engine            = "postgres"
   engine_version    = "17"
-  instance_class    = "db.t3.micro" #TODO: needs to be dynamic
+  instance_class    = var.db_instance
   multi_az          = true
-  allocated_storage = 5 #TODO: needs to be dynamic
+  allocated_storage = var.db_size
 
 
   db_name  = local.db-name
   username = local.master-username
-  port     = local.db-port
 
-  deletion_protection = false #TODO: needs to be dynamic
+  port = local.db-port
+
+  deletion_protection = var.db_deletion_protection
 
 
   vpc_security_group_ids = [aws_security_group.rds-sg.id]
