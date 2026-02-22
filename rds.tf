@@ -45,13 +45,15 @@ module "db" {
   engine            = "postgres"
   engine_version    = "17"
   instance_class    = var.db_instance
-  multi_az          = true
+  multi_az          = var.db_multi_az
   allocated_storage = var.db_size
 
 
-  db_name  = local.db-name
-  username = local.master-username
-  port     = local.db-port
+  db_name                     = local.db-name
+  username                    = local.master-username
+  port                        = local.db-port
+  manage_master_user_password = true
+  password_wo                 = "secret" #TODO: Obviously I am gonna change this
 
   deletion_protection = var.db_deletion_protection
 
@@ -60,16 +62,13 @@ module "db" {
   #TODO: Check if this would be good
   create_db_option_group    = false
   create_db_parameter_group = false
-  create_db_subnet_group    = true
 
-  subnet_ids = module.vpc.private_subnets
+  create_db_subnet_group = true
+  subnet_ids             = module.vpc.private_subnets
+  db_subnet_group_name   = local.db-subnet-group
 
   tags = {
     Environment = var.env
-  }
-
-  db_subnet_group_tags = {
-    Name = local.db-subnet-group
   }
 
 }
