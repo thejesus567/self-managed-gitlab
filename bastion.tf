@@ -13,6 +13,11 @@ data "aws_ami" "ubuntu" {
 
 }
 
+# TODO: Check if aws provider approved PR below 
+# in order to use ephemeral values for my key pair
+# https://github.com/hashicorp/terraform-provider-aws/pull/44102
+
+
 # RSA key of size 4096 bits
 #ephemeral "tls_private_key" "rsa" {
 #  algorithm = "RSA"
