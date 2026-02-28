@@ -1,11 +1,12 @@
 locals {
-  ec2-name        = "Bastion Host A"
+  bastion-a-name  = "Bastion Host A"
+  bastion-b-name  = "Bastion Host B"
   bastion-sg-name = "bastion-sec-group"
 
 }
 
 resource "aws_security_group" "bastion-sg" {
-  name        = local.lb-sg-name
+  name        = local.bastion-sg-name
   description = "Security group for Bastion host"
   vpc_id      = module.vpc.vpc_id
 
@@ -57,16 +58,34 @@ resource "aws_key_pair" "gitlab-key" {
 resource "aws_instance" "bastion-host-a" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
-
-  subnet_id = module.vpc.public_subnets[0]
+  subnet_id     = module.vpc.public_subnets[0]
 
   #TODO: missing eni
+  associate_public_ip_address = true
 
   vpc_security_group_ids = [aws_security_group.bastion-sg.id]
 
 
   key_name = aws_key_pair.gitlab-key.key_name
   tags = {
-    Name = local.ec2-name
+    Name = local.bastion-a-name
+  }
+}
+
+resource "aws_instance" "bastion-host-b" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+
+  subnet_id = module.vpc.public_subnets[1]
+
+  #TODO: missing eni
+  associate_public_ip_address = true
+
+  vpc_security_group_ids = [aws_security_group.bastion-sg.id]
+
+
+  key_name = aws_key_pair.gitlab-key.key_name
+  tags = {
+    Name = local.bastion-b-name
   }
 }
