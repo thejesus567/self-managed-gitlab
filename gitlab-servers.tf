@@ -1,6 +1,7 @@
 
 locals {
-  gitlab-server-name = "Gitlab"
+  gitlab-server-name-a = "Gitlab-A"
+  gitlab-server-name-b = "Gitlab-B"
 }
 data "aws_ami" "gitlab-ami" {
   most_recent = true
@@ -22,7 +23,21 @@ resource "aws_instance" "gitalb-server-a" {
   key_name = aws_key_pair.gitlab-key.key_name
 
   tags = {
-    Name = local.gitlab-server-name
+    Name = local.gitlab-server-name-a
+  }
+}
+
+resource "aws_instance" "gitalb-server-b" {
+  ami           = data.aws_ami.gitlab-ami.id
+  instance_type = "t3.medium"
+  subnet_id     = module.vpc.private_subnets[1]
+
+  vpc_security_group_ids = [aws_security_group.bastion-sg.id]
+
+  key_name = aws_key_pair.gitlab-key.key_name
+
+  tags = {
+    Name = local.gitlab-server-name-b
   }
 }
 
