@@ -1,0 +1,74 @@
+locals {
+  rds-sg-name     = "gitlab-rds-sec-group"
+  db-subnet-group = "gitlab-subnet-rds-group"
+  db-identifier   = "gitlab-db-ha"
+  master-username = "gitlab"
+  db-port         = 5432
+  db-name         = "gitlabhq_${var.env}"
+}
+
+# RDS security group
+resource "aws_security_group" "rds-sg" {
+  name        = local.rds-sg-name
+  description = "Security group for RDS database"
+  vpc_id      = module.vpc.vpc_id
+
+  tags = {
+    Name        = local.rds-sg-name
+    Environment = var.env
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "postgresql-ingress" {
+  security_group_id            = aws_security_group.rds-sg.id
+  referenced_security_group_id = aws_security_group.lb-sg.id
+  from_port                    = local.db-port
+  to_port                      = local.db-port
+  ip_protocol                  = "tcp"
+}
+
+# DB Subnet group
+# TODO: Check if this is actually nedeed
+resource "aws_db_subnet_group" "rds-subnet-group" {
+  name       = local.db-subnet-group
+  subnet_ids = module.vpc.private_subnets
+  tags = {
+    Name = local.db-subnet-group
+  }
+}
+
+module "db" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "7.1.0"
+
+  identifier        = local.db-identifier
+  engine            = "postgres"
+  engine_version    = "17"
+  instance_class    = var.db_instance
+  multi_az          = var.db_multi_az
+  allocated_storage = var.db_size
+
+
+  db_name                     = local.db-name
+  username                    = local.master-username
+  port                        = local.db-port
+  manage_master_user_password = true
+  password_wo                 = "secret" #TODO: Obviously I am gonna change this
+
+  deletion_protection = var.db_deletion_protection
+
+  vpc_security_group_ids = [aws_security_group.rds-sg.id]
+
+  #TODO: Check if this would be good
+  create_db_option_group    = false
+  create_db_parameter_group = false
+
+  create_db_subnet_group = true
+  subnet_ids             = module.vpc.private_subnets
+  db_subnet_group_name   = local.db-subnet-group
+
+  tags = {
+    Environment = var.env
+  }
+
+}

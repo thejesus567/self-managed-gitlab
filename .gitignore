@@ -1,0 +1,4 @@
+# Local .terraform directories
+**/.terraform/*
+terraform.tfstate*
+pending-things
