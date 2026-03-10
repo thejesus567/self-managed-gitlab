@@ -3,4 +3,7 @@ This repository contains Terraform code to provision the infrastructure required
 
 
 
-![Arquitecture Diagram](gitlab-architecture.png)
+## Architecture
+<p align="center">
+  <img src="gitlab-architecture.png" width="600">
+</p>
