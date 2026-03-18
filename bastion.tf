@@ -53,7 +53,7 @@ data "aws_ami" "ubuntu" {
 //key pair
 resource "aws_key_pair" "gitlab-key" {
   key_name   = "gitlab-key"
-  public_key = file("~/.ssh/gitlab-key.pub")
+  public_key = file("~/.ssh/bastion-key.pub")
 
   tags = {
     Name = "bastion-host-a"
