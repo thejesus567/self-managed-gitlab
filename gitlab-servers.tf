@@ -13,6 +13,19 @@ data "aws_ami" "gitlab-ami" {
 
 }
 
+//key pair
+resource "aws_key_pair" "gitlab-key" {
+  key_name   = "gitlab-key"
+  public_key = file("~/.ssh/gitlab-key.pub")
+
+  tags = {
+    Name = "bastion-host-a"
+  }
+
+}
+
+
+
 resource "aws_instance" "gitalb-server-a" {
   ami           = data.aws_ami.gitlab-ami.id
   instance_type = "t3.medium"

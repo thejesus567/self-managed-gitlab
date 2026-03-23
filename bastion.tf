@@ -51,7 +51,7 @@ data "aws_ami" "ubuntu" {
 #}
 
 //key pair
-resource "aws_key_pair" "gitlab-key" {
+resource "aws_key_pair" "bastion-key" {
   key_name   = "gitlab-key"
   public_key = file("~/.ssh/bastion-key.pub")
 
@@ -72,7 +72,8 @@ resource "aws_instance" "bastion-host-a" {
   vpc_security_group_ids = [aws_security_group.bastion-sg.id]
 
 
-  key_name = aws_key_pair.gitlab-key.key_name
+  key_name = aws_key_pair.bastion-key.key_name
+ 
   tags = {
     Name = local.bastion-a-name
   }
